@@ -1,0 +1,28 @@
+{
+  "name": "es_modules_cdn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wanglin2/ES_Modules_CDN.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wanglin2/ES_Modules_CDN/issues"
+  },
+  "homepage": "https://github.com/wanglin2/ES_Modules_CDN#readme",
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "dayjs": "^1.11.1",
+    "esbuild": "^0.14.38",
+    "koa": "^2.13.4",
+    "koa-static": "^5.0.0",
+    "moment": "^2.29.3",
+    "vue": "^2.6.11"
+  }
+}

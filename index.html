@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES模块</title>
+</head>
+<body>
+    <div id="app">{{message}}</div>
+    <script type="module">
+        // import moment from '/moment';
+        // document.getElementById('app').innerHTML = moment().format('YYYY-MM-DD');
+
+        import dayjs from '/dayjs/esm/index.js';
+        document.getElementById('app').innerHTML = dayjs().format('YYYY-MM-DD HH:mm:ss');
+
+        // import Vue from '/vue@2.6.11/dist/vue.esm.browser.js'
+        // import moment from '/moment'
+        // var app = new Vue({
+        //     el: '#app',
+        //     data: {
+        //         message: 'Hello ' + moment().format('YYYY')
+        //     }
+        // })
+    </script>
+</body>
+</html>
