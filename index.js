@@ -2,7 +2,7 @@ const Koa = require("koa");
 const Router = require("@koa/router");
 const serve = require("koa-static");
 const { execSync } = require("child_process");
-const { transformSync } = require("esbuild");
+const { transformSync, buildSync } = require("esbuild");
 const path = require("path");
 const fs = require("fs");
 
@@ -30,7 +30,12 @@ router.get("/(.*)", async (ctx, next) => {
       let modulePkg = readPkg(pkgName);
       ctx.type = "text/javascript";
       // 处理包
-      ctx.body = handleEsm(pkgName, pkgPathArr.length <= 0 ? [modulePkg.module || modulePkg.main] : pkgPathArr);
+      ctx.body = handleEsm(
+        pkgName,
+        pkgPathArr.length <= 0
+          ? [modulePkg.module || modulePkg.main]
+          : pkgPathArr
+      );
     } catch (error) {
       ctx.throw(400, error.message);
     }
@@ -73,20 +78,39 @@ const commonjsToEsm = (name, pkg) => {
   }).code;
 };
 
+// 检查某个文件是否存在
+const checkIsExist = (file) => {
+  try {
+    fs.accessSync(file, fs.constants.F_OK);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 // 处理es模块
 const handleEsm = (name, paths) => {
+  const outfile = path.join("./node_modules/", name, "esbuild_output.js");
+  // 检查是否已经编译过了
+  if (checkIsExist(outfile)) {
+    return fs.readFileSync(outfile, "utf8");
+  }
   // 如果没有文件扩展名，则默认为`.js`后缀
   let last = paths[paths.length - 1];
   if (!/\.[^.]+$/.test(last)) {
-    paths[paths.length - 1] = last + '.js';
+    paths[paths.length - 1] = last + ".js";
   }
-  let file = fs.readFileSync(
-    path.join("./node_modules/", name, ...paths),
-    "utf8"
-  );
-  return transformSync(file, {
+  // let file = fs.readFileSync(
+  //   path.join("./node_modules/", name, ...paths),
+  //   "utf8"
+  // );
+  buildSync({
+    entryPoints: [path.join("./node_modules/", name, ...paths)],
     format: "esm",
-  }).code;
+    bundle: true,
+    outfile,
+  });
+  return fs.readFileSync(outfile, "utf8");
 };
 
 app.listen(3000);
